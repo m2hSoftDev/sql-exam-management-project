@@ -2,7 +2,6 @@
 namespace Repositories;
 
 use PDO;
-use Models\User;
 
 class UserRepository {
     private $db;
@@ -17,9 +16,9 @@ class UserRepository {
         return $stmt->fetch();
     }
 
-    public function create(User $user) {
+    public function create(array $data) {
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$user->name, $user->email, $user->password, $user->role]);
+        $stmt->execute([$data['name'], $data['email'], $data['password'], $data['role']]);
         return $this->db->lastInsertId();
     }
 

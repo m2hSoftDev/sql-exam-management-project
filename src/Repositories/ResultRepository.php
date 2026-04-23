@@ -2,7 +2,6 @@
 namespace Repositories;
 
 use PDO;
-use Models\Result;
 
 class ResultRepository {
     private $db;
@@ -11,15 +10,15 @@ class ResultRepository {
         $this->db = $db;
     }
 
-    public function create(Result $result) {
+    public function create(array $data) {
         $sql = "INSERT INTO results (user_id, exam_id, score, total_possible_marks) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            $result->user_id,
-            $result->exam_id,
-            $result->score,
-            $result->total_possible_marks
+            $data['user_id'],
+            $data['exam_id'],
+            $data['score'],
+            $data['total_possible_marks']
         ]);
         return $this->db->lastInsertId();
     }

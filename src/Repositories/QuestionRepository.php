@@ -2,7 +2,6 @@
 namespace Repositories;
 
 use PDO;
-use Models\Question;
 
 class QuestionRepository {
     private $db;
@@ -17,19 +16,19 @@ class QuestionRepository {
         return $stmt->fetchAll();
     }
 
-    public function create(Question $question) {
+    public function create(array $data) {
         $sql = "INSERT INTO questions (exam_id, question_text, option_a, option_b, option_c, option_d, correct_option, marks) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            $question->exam_id,
-            $question->question_text,
-            $question->option_a,
-            $question->option_b,
-            $question->option_c,
-            $question->option_d,
-            $question->correct_option,
-            $question->marks
+            $data['exam_id'],
+            $data['question_text'],
+            $data['option_a'],
+            $data['option_b'],
+            $data['option_c'],
+            $data['option_d'],
+            $data['correct_option'],
+            $data['marks']
         ]);
         return $this->db->lastInsertId();
     }
@@ -40,19 +39,19 @@ class QuestionRepository {
         return $stmt->fetch();
     }
 
-    public function update(Question $question) {
+    public function update(array $data) {
         $sql = "UPDATE questions SET question_text = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, correct_option = ?, marks = ? 
                 WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
-            $question->question_text,
-            $question->option_a,
-            $question->option_b,
-            $question->option_c,
-            $question->option_d,
-            $question->correct_option,
-            $question->marks,
-            $question->id
+            $data['question_text'],
+            $data['option_a'],
+            $data['option_b'],
+            $data['option_c'],
+            $data['option_d'],
+            $data['correct_option'],
+            $data['marks'],
+            $data['id']
         ]);
     }
 

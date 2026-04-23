@@ -2,7 +2,6 @@
 namespace Repositories;
 
 use PDO;
-use Models\Subject;
 
 class SubjectRepository {
     private $db;
@@ -16,15 +15,15 @@ class SubjectRepository {
         return $stmt->fetchAll();
     }
 
-    public function create(Subject $subject) {
+    public function create(array $data) {
         $stmt = $this->db->prepare("INSERT INTO subjects (name, code) VALUES (?, ?)");
-        $stmt->execute([$subject->name, $subject->code]);
+        $stmt->execute([$data['name'], $data['code']]);
         return $this->db->lastInsertId();
     }
 
-    public function update(Subject $subject) {
+    public function update(array $data) {
         $stmt = $this->db->prepare("UPDATE subjects SET name = ?, code = ? WHERE id = ?");
-        return $stmt->execute([$subject->name, $subject->code, $subject->id]);
+        return $stmt->execute([$data['name'], $data['code'], $data['id']]);
     }
 
     public function delete($id) {

@@ -2,7 +2,6 @@
 namespace Repositories;
 
 use PDO;
-use Models\Exam;
 
 class ExamRepository {
     private $db;
@@ -19,17 +18,17 @@ class ExamRepository {
         return $this->db->query($sql)->fetchAll();
     }
 
-    public function create(Exam $exam) {
+    public function create(array $data) {
         $sql = "INSERT INTO exams (subject_id, title, duration_minutes, start_time, end_time, total_marks) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            $exam->subject_id, 
-            $exam->title, 
-            $exam->duration_minutes, 
-            $exam->start_time, 
-            $exam->end_time,
-            $exam->total_marks
+            $data['subject_id'], 
+            $data['title'], 
+            $data['duration_minutes'], 
+            $data['start_time'], 
+            $data['end_time'],
+            $data['total_marks']
         ]);
         return $this->db->lastInsertId();
     }
@@ -40,18 +39,18 @@ class ExamRepository {
         return $stmt->fetch();
     }
 
-    public function update(Exam $exam) {
+    public function update(array $data) {
         $sql = "UPDATE exams SET subject_id = ?, title = ?, duration_minutes = ?, start_time = ?, end_time = ?, total_marks = ? 
                 WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
-            $exam->subject_id, 
-            $exam->title, 
-            $exam->duration_minutes, 
-            $exam->start_time, 
-            $exam->end_time,
-            $exam->total_marks,
-            $exam->id
+            $data['subject_id'], 
+            $data['title'], 
+            $data['duration_minutes'], 
+            $data['start_time'], 
+            $data['end_time'],
+            $data['total_marks'],
+            $data['id']
         ]);
     }
 
