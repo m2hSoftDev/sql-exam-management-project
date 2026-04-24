@@ -4,16 +4,53 @@
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql)](https://www.mysql.com/)
 [![SQL Focus](https://img.shields.io/badge/SQL-100%25%20Raw-blueviolet?style=for-the-badge)](https://en.wikipedia.org/wiki/SQL)
 
-A performance-optimized, full-stack PHP application where the **entire business logic is powered by Raw SQL**. This project demonstrates how to build a complex management system without an ORM, prioritizing direct database control and query precision.
+A performance-optimized, full-stack PHP application where the **entire business logic is powered by Raw SQL**. This project prioritizes direct database control, query precision, and the "Pure Row" architectural approach.
 
 ---
 
-## 💎 The "Raw SQL" Focus
+## 💎 The "Raw SQL" Philosophy
 
-Unlike modern frameworks that hide the database behind abstractions, this project puts **SQL at the center**. Every interaction—from authentication to automated grading—is handled through precisely crafted SQL queries.
+This project rejects the use of ORMs (Object-Relational Mappers) in favor of **Raw SQL via PDO**. This ensures:
+- **Zero Overhead**: No heavy abstraction layers between PHP and MySQL.
+- **Full Control**: Complete mastery over execution plans and query optimization.
+- **Pure Data**: Returns raw associative arrays for high-performance data handling.
 
-### 🔥 Hero SQL: Automated Grading
-Instead of calculating scores in PHP, the system uses complex JOINs and CASE statements to grade exams directly on the database server:
+---
+
+## 📂 Detailed Database Schema
+
+The system is built on a normalized relational schema designed for ACID compliance and referential integrity.
+
+### 🗺️ Table Definitions
+
+| Table | Columns | Purpose |
+| :--- | :--- | :--- |
+| **`users`** | `id`, `name`, `email`, `password`, `role` | Identity management (Admin/Student). |
+| **`subjects`** | `id`, `name`, `code` | Categorization for exams (e.g., CS101). |
+| **`exams`** | `id`, `subject_id`, `title`, `duration_minutes`, `start_time`, `end_time`, `total_marks` | Scheduled examination sessions. |
+| **`questions`** | `id`, `exam_id`, `question_text`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_option`, `marks` | Individual MCQ items linked to exams. |
+| **`results`** | `id`, `user_id`, `exam_id`, `score`, `total_possible_marks`, `submitted_at` | Persistence for student attempts. |
+
+---
+
+## 🔥 Query Showcase (Deep Dive)
+
+### 1. Smart Student Dashboard Logic
+To find exams that are **currently live** and have **not yet been attempted** by a specific student, we use a correlated subquery:
+
+```sql
+SELECT e.*, s.name as subject_name 
+FROM exams e 
+JOIN subjects s ON e.subject_id = s.id 
+WHERE e.end_time > CURRENT_TIMESTAMP 
+AND e.id NOT IN (
+    SELECT exam_id FROM results WHERE user_id = :student_id
+)
+ORDER BY e.start_time ASC;
+```
+
+### 2. Automated Server-Side Grading
+Instead of calculating scores in PHP loops, we leverage SQL aggregates to compute results in a single atomic operation:
 
 ```sql
 SELECT 
@@ -21,60 +58,55 @@ SELECT
     SUM(q.marks) as total_possible
 FROM questions q
 JOIN (
-    -- Dynamically matched student answers
-    SELECT question_id as q_id, submitted_ans as ans FROM temporary_submissions
+    -- This simulates the user's submitted answers
+    SELECT 1 as q_id, 'B' as ans UNION ALL
+    SELECT 2 as q_id, 'A' as ans
 ) as user_ans ON q.id = user_ans.q_id
-WHERE q.exam_id = 123;
+WHERE q.exam_id = :exam_id;
+```
+
+### 3. Admin Analytics & Performance
+Aggregating global stats across all student attempts for a high-level overview:
+
+```sql
+SELECT 
+    e.title,
+    COUNT(r.id) as total_submissions,
+    AVG(r.score) as average_score,
+    MAX(r.score) as highest_score
+FROM exams e
+LEFT JOIN results r ON e.id = r.exam_id
+GROUP BY e.id;
 ```
 
 ---
 
-## 🌟 Core Functionalities
+## 🏗️ Architecture & SQL Logic
 
-### 🛡️ Administrative Suite
-- **Subject Lifecycle**: CRUD operations using structured `INSERT`, `UPDATE`, and `DELETE` queries.
-- **Exam Orchestration**: Complex scheduling logic handled via SQL `DATETIME` comparisons.
-- **Question Bank**: Dynamic MCQ management with foreign key integrity.
-- **Advanced Analytics**: Real-time performance tracking using SQL `AVG()`, `MAX()`, and `GROUP BY` aggregates.
+### 🔗 Referential Integrity Rules
+- **Cascading Deletes**: `ON DELETE CASCADE` is implemented on `exams -> questions` and `exams -> results`. If an exam is deleted, all related data is automatically purged.
+- **Unique Constraints**: A composite unique key `UNIQUE(user_id, exam_id)` on the `results` table prevents students from submitting the same exam twice.
 
-### 🎓 Student Portal
-- **Smart Filtering**: The dashboard uses `NOT IN` and `EXISTS` clauses to show only exams the student hasn't taken yet.
-- **Live Exam Engine**: Time-synchronized attempts powered by database-level timestamps.
-- **Instant Feedback**: Immediate result persistence and retrieval.
-
----
-
-## 🏗️ Architecture & Database Logic
-
-### 📂 Logic Distribution
-- **`src/Repositories/`**: The "Heart" of the project. Contains 100% Raw SQL strings passed through PDO.
-- **`database/queries.sql`**: A complete reference of every query used in the application.
-- **`database.sql`**: The blueprint defining constraints, indexes, and relationships.
-
-### 🔗 Entity-Relationship Model (ERD)
-
-| Relation | Logic | Enforcement |
-| :--- | :--- | :--- |
-| **User ↔ Result** | `1:N` | `FOREIGN KEY (user_id) REFERENCES users(id)` |
-| **Exam ↔ Question** | `1:N` | `ON DELETE CASCADE` (Deletes questions if exam is removed) |
-| **Exam ↔ Result** | `1:N` | `UNIQUE(user_id, exam_id)` (Prevents double submission) |
-| **Subject ↔ Exam** | `1:N` | Indexed `subject_id` for fast filtering |
+### 🧩 Repository Pattern (Pure SQL)
+Each repository in `src/Repositories/` acts as a container for these raw queries. 
+- **`UserRepository.php`**: Handles authentication and role-based retrieval.
+- **`ExamRepository.php`**: Manages time-sensitive exam windows.
+- **`QuestionRepository.php`**: Handles bulk insertion of MCQ data.
 
 ---
 
-## 🛠️ Technical Stack
+## 🛠️ Setup & Installation
 
-- **Engine**: MySQL / MariaDB (InnoDB for ACID compliance)
-- **Interface**: PHP PDO (Prepared Statements to prevent SQL Injection)
-- **UI**: Clean Vanilla CSS & Semantic HTML
-
----
-
-## ⚙️ Setup & Installation
-
-1.  **Database**: Create `exam_db` and run `database.sql`.
-2.  **Config**: Set credentials in `config/database.php`.
-3.  **Run**:
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/m2hSoftDev/sql-exam-management-project.git
+    ```
+2.  **Initialize Database**
+    - Create `exam_db`.
+    - Run the commands in `database.sql` to build the schema.
+3.  **Config**
+    - Edit `config/database.php` with your MySQL credentials.
+4.  **Run**
     ```bash
     php -S localhost:8000 -t public
     ```
@@ -90,4 +122,4 @@ WHERE q.exam_id = 123;
 
 ---
 
-*Focusing on the beauty and power of Raw SQL for robust application development.*
+*This project serves as a masterclass in utilizing Raw SQL for high-performance web applications.*
