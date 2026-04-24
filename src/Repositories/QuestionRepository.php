@@ -16,20 +16,21 @@ class QuestionRepository {
         return $stmt->fetchAll();
     }
 
-    public function create(array $data) {
+    public function create($data) {
         $sql = "INSERT INTO questions (exam_id, question_text, option_a, option_b, option_c, option_d, correct_option, marks) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            $data['exam_id'],
-            $data['question_text'],
-            $data['option_a'],
-            $data['option_b'],
-            $data['option_c'],
-            $data['option_d'],
-            $data['correct_option'],
-            $data['marks']
-        ]);
+        
+        $examId = is_object($data) ? $data->exam_id : $data['exam_id'];
+        $text = is_object($data) ? $data->question_text : $data['question_text'];
+        $a = is_object($data) ? $data->option_a : $data['option_a'];
+        $b = is_object($data) ? $data->option_b : $data['option_b'];
+        $c = is_object($data) ? $data->option_c : $data['option_c'];
+        $d = is_object($data) ? $data->option_d : $data['option_d'];
+        $correct = is_object($data) ? $data->correct_option : $data['correct_option'];
+        $marks = is_object($data) ? $data->marks : $data['marks'];
+
+        $stmt->execute([$examId, $text, $a, $b, $c, $d, $correct, $marks]);
         return $this->db->lastInsertId();
     }
 

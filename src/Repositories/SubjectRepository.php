@@ -15,15 +15,20 @@ class SubjectRepository {
         return $stmt->fetchAll();
     }
 
-    public function create(array $data) {
+    public function create($data) {
         $stmt = $this->db->prepare("INSERT INTO subjects (name, code) VALUES (?, ?)");
-        $stmt->execute([$data['name'], $data['code']]);
+        $name = is_object($data) ? $data->name : $data['name'];
+        $code = is_object($data) ? $data->code : $data['code'];
+        $stmt->execute([$name, $code]);
         return $this->db->lastInsertId();
     }
 
-    public function update(array $data) {
+    public function update($data) {
         $stmt = $this->db->prepare("UPDATE subjects SET name = ?, code = ? WHERE id = ?");
-        return $stmt->execute([$data['name'], $data['code'], $data['id']]);
+        $name = is_object($data) ? $data->name : $data['name'];
+        $code = is_object($data) ? $data->code : $data['code'];
+        $id = is_object($data) ? $data->id : $data['id'];
+        return $stmt->execute([$name, $code, $id]);
     }
 
     public function delete($id) {

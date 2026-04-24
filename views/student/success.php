@@ -27,7 +27,7 @@
     </div>
 
     <div>
-        <a href="dashboard" class="btn btn-primary" style="width: auto; padding: 14px 40px; border-radius: 30px; font-weight: 600; font-size: 1.1rem;">
+        <a href="<?php echo $baseUrl; ?>/student/dashboard" class="btn btn-primary" style="width: auto; padding: 14px 40px; border-radius: 30px; font-weight: 600; font-size: 1.1rem;">
             <i class="fas fa-home" style="margin-right: 8px;"></i> Return to Dashboard
         </a>
     </div>

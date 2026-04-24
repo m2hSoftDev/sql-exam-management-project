@@ -10,16 +10,18 @@ class ResultRepository {
         $this->db = $db;
     }
 
-    public function create(array $data) {
+    public function create($data) {
         $sql = "INSERT INTO results (user_id, exam_id, score, total_possible_marks) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            $data['user_id'],
-            $data['exam_id'],
-            $data['score'],
-            $data['total_possible_marks']
-        ]);
+        
+        // Handle both object (Model) and associative array data
+        $userId = is_object($data) ? $data->user_id : $data['user_id'];
+        $examId = is_object($data) ? $data->exam_id : $data['exam_id'];
+        $score = is_object($data) ? $data->score : $data['score'];
+        $total = is_object($data) ? $data->total_possible_marks : $data['total_possible_marks'];
+
+        $stmt->execute([$userId, $examId, $score, $total]);
         return $this->db->lastInsertId();
     }
 

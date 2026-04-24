@@ -32,8 +32,8 @@ class Database {
             // Set error mode to exception
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            // Set default fetch mode to associative array for "Pure Row" approach
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            // Set default fetch mode to object for property access (->)
+            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
             
         } catch (PDOException $exception) {
             // In production, you would log this instead of Echoing

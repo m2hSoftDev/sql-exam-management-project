@@ -16,9 +16,13 @@ class UserRepository {
         return $stmt->fetch();
     }
 
-    public function create(array $data) {
+    public function create($data) {
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$data['name'], $data['email'], $data['password'], $data['role']]);
+        $name = is_object($data) ? $data->name : $data['name'];
+        $email = is_object($data) ? $data->email : $data['email'];
+        $password = is_object($data) ? $data->password : $data['password'];
+        $role = is_object($data) ? $data->role : $data['role'];
+        $stmt->execute([$name, $email, $password, $role]);
         return $this->db->lastInsertId();
     }
 
