@@ -4,7 +4,28 @@
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql)](https://www.mysql.com/)
 [![SQL Focus](https://img.shields.io/badge/SQL-100%25%20Raw-blueviolet?style=for-the-badge)](https://en.wikipedia.org/wiki/SQL)
 
-A performance-optimized, full-stack PHP application where the **entire business logic is powered by Raw SQL**. This project prioritizes direct database control, query precision, and the "Pure Row" architectural approach.
+A performance-optimized, full-stack PHP application where the **entire business logic is powered by Raw SQL**. This project priorities direct database control, query precision, and the "Pure Row" architectural approach.
+
+---
+
+## ✨ Core Features & Functionality
+
+### 🛠️ Administrative Powerhouse
+- **Dynamic Exam Architect**: Create, edit, and schedule exams with precise start/end windows.
+- **Subject Intelligence**: Organize your curriculum with a code-based subject management system.
+- **Automated MCQ Engine**: Add questions with variable marking and auto-grading capabilities.
+- **Live Performance Tracking**: Monitor student results in real-time with aggregated statistics.
+
+### 🎓 Premium Student Experience
+- **Smart Dashboard**: A tailored view showing only live exams that are ready to be taken.
+- **Live Countdown Timer**: A synchronized, JavaScript-enhanced timer that ensures strict exam duration enforcement.
+- **Instant Result Generation**: View your scores immediately after submission, calculated server-side for maximum security.
+- **Historical Performance**: Access a complete log of all past attempts and grades.
+
+### 🔒 Enterprise-Grade Security
+- **Secure Authentication**: Role-based access control (RBAC) for Admins and Students.
+- **SQL Injection Protection**: 100% prepared statements using PDO.
+- **Atomic Operations**: Database transactions and constraints ensure data integrity.
 
 ---
 
@@ -86,12 +107,6 @@ GROUP BY e.id;
 ### 🔗 Referential Integrity Rules
 - **Cascading Deletes**: `ON DELETE CASCADE` is implemented on `exams -> questions` and `exams -> results`. If an exam is deleted, all related data is automatically purged.
 - **Unique Constraints**: A composite unique key `UNIQUE(user_id, exam_id)` on the `results` table prevents students from submitting the same exam twice.
-
-### 🧩 Repository Pattern (Pure SQL)
-Each repository in `src/Repositories/` acts as a container for these raw queries. 
-- **`UserRepository.php`**: Handles authentication and role-based retrieval.
-- **`ExamRepository.php`**: Manages time-sensitive exam windows.
-- **`QuestionRepository.php`**: Handles bulk insertion of MCQ data.
 
 ---
 
