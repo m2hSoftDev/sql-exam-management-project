@@ -138,3 +138,32 @@ GROUP BY e.id;
 ---
 
 *This project serves as a masterclass in utilizing Raw SQL for high-performance web applications.*
+
+---
+
+## 📸 Project Gallery
+
+Explore the visual interface and core modules of the Online Examination Management System.
+
+### 🎓 Student Experience
+| **Student Dashboard** | **Exam Selection** |
+| :---: | :---: |
+| <img src="image/image.png" width="900" alt="Student Dashboard"> <br> *Comprehensive overview of available exams and personal performance metrics.* | <img src="image/image copy.png" width="900" alt="Exam Selection"> <br> *Tailored view of scheduled examinations ready for student participation.* |
+
+### 🔒 Authentication & Access
+| **User Login** | **Account Creation** |
+| :---: | :---: |
+| <img src="image/image copy 2.png" width="900" alt="Login Page"> <br> *Secure role-based access for students and administrators.* | <img src="image/image copy 4.png" width="900" alt="Registration Page"> <br> *User-friendly sign-up process for new system participants.* |
+| <img src="image/image copy 3.png" width="900" alt="Auth Success"> <br> *Real-time feedback for successful registration and authentication.* | |
+
+### 🛠️ Administrative Control Center
+| **Admin Dashboard Overview** | **Subject Management** |
+| :---: | :---: |
+| <img src="image/image copy 7.png" width="900" alt="Admin Dashboard"> <br> *High-level statistical analysis of system-wide subjects and active exams.* | <img src="image/image copy 6.png" width="900" alt="Subject Management"> <br> *Tools for creating and organizing the academic curriculum.* |
+
+### 📝 Examination & Content Management
+| **Exam Configuration** | **Question Bank** |
+| :---: | :---: |
+| <img src="image/image copy 5.png" width="900" alt="Exam Management"> <br> *Interface for scheduling exams with precise duration and timing controls.* | <img src="image/image copy 8.png" width="900" alt="Question Bank"> <br> *Centralized repository for managing MCQ content across all exams.* |
+| <img src="image/image copy 9.png" width="900" alt="Add Question"> <br> *Dynamic form for adding multiple-choice questions with automated grading logic.* | |
+
